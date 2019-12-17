@@ -8,6 +8,7 @@ staging:
   production_environment: false
 
 review:
+  auto_deploy_on: pr
   environment: pr-${{ pr }}
   transient_environment: true
   production_environment: false

@@ -1,0 +1,80 @@
+name: 'Deploy'
+on: ['deployment']
+
+jobs:
+  pr:
+    if: github.event.deployment.environment != 'staging' && github.event.deployment.environment != 'production'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v1'
+
+      - name: 'Deployment pending'
+        uses: 'deliverybot/deployment-status@master'
+        with:
+          state: 'pending'
+          token: '${{ github.token }}'
+
+      - name: 'Deploy ${{ github.event.deployment.environment }}'
+        run: |
+          echo "task - ${{ github.event.deployment.task }}"
+          echo "environment - ${{ github.event.deployment.environment }}"
+          echo "payload - ${{ github.event.deployment.payload }}"
+      - name: 'Still Deploying ${{ github.event.deployment.environment }}'
+        run: |
+          echo "This will not fail - ${{ github.event.deployment.task}}"
+      - name: 'Another step'
+        run: |
+          echo "This is another deploy step"
+      - name: 'Deployment success'
+        if: success()
+        uses: 'deliverybot/deployment-status@master'
+        with:
+          state: 'success'
+          environment-url: 'https://wwww.github.com/${{ github.event.deployment.environment}}'
+          token: '${{ github.token }}'
+
+      - name: 'Deployment failure'
+        if: failure()
+        uses: 'deliverybot/deployment-status@master'
+        with:
+          state: 'failure'
+          token: '${{ github.token }}'
+  staging:
+    if: github.event.deployment.environment == 'staging'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v1'
+
+      - name: 'Deployment pending'
+        uses: 'deliverybot/deployment-status@master'
+        with:
+          state: 'pending'
+          token: '${{ github.token }}'
+
+      - name: 'Deploy ${{ github.event.deployment.environment }}'
+        run: |
+          echo "task - ${{ github.event.deployment.task }}"
+          echo "environment - ${{ github.event.deployment.environment }}"
+          echo "payload - ${{ github.event.deployment.payload }}"
+      - name: 'Still Deploying ${{ github.event.deployment.environment }}'
+        run: |
+          echo "This will not fail - ${{ github.event.deployment.task}}"
+      - name: 'Another step'
+        run: |
+          echo "This is another deploy step"
+      - name: 'Deployment success'
+        if: success()
+        uses: 'deliverybot/deployment-status@master'
+        with:
+          state: 'success'
+          environment-url: 'https://wwww.google.cl/'
+          token: '${{ github.token }}'
+
+      - name: 'Deployment failure'
+        if: failure()
+        uses: 'deliverybot/deployment-status@master'
+        with:
+          state: 'failure'
+          token: '${{ github.token }}'
